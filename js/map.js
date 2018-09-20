@@ -26,10 +26,13 @@ var arrayPhotos = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg'
 ];
 
-var getRandom = function(min, max) {
+var newArrayTitles = [];
+
+var getRandom = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 // сортировка массива в случайном порядке
+
 function shuffle(array) {
   var currentIndex = array.length;
   while (currentIndex !== 0) {
@@ -43,7 +46,7 @@ function shuffle(array) {
 }
 // формируем не повторяющиеся аватарки
 var randomAvatars = [];
-var makeRandomAvavtar = function() {
+var makeRandomAvavtar = function () {
   for (var s = 1; s < 9; s++) {
     var elemCopyAvatar = 'img/avatars/user0' + s + '.png';
     randomAvatars.push(elemCopyAvatar);
@@ -51,35 +54,35 @@ var makeRandomAvavtar = function() {
   shuffle(randomAvatars);
   return randomAvatars;
 };
+// console.log(randomAvatars);
+
 // формируем не повторяющиеся заголовки
-var newArrayTitles = [];
-var makeRandomTitle = function() {
+var makeRandomTitle = function () {
   newArrayTitles = arrayTitles.slice(0, arrayTitles.length);
   shuffle(newArrayTitles);
   return newArrayTitles;
 };
 
+// console.log(newArrayTitles);
 // массив случайной длины для Features
-var makeFeatures = function() {
+var makeFeatures = function () {
   var copyFeatures = [];
   copyFeatures = arrayFeatures.slice(0, arrayFeatures.length);
   return copyFeatures.splice(0, getRandom(0, copyFeatures.length));
 };
-
 var pinsWidth = document.querySelector('.map__pins').offsetWidth;
-
 // формируем объект для объявления
-var makeAdvert = function() {
+var makeAdvert = function () {
   var locationX = getRandom(0, pinsWidth);
   var locationY = getRandom(130, 360);
   return {
-    author: { avatar: randomAvatars[i] },
+    author: {avatar: makeRandomAvavtar[i]},
     location: {
       x: locationX,
       y: locationY
     },
     offer: {
-      title: newArrayTitles[i],
+      title: makeRandomTitle[i],
       address: locationX + ', ' + locationY,
       price: getRandom(1000, 1000000),
       type: arrayTypes[getRandom(0, arrayTypes.length - 1)],
@@ -94,10 +97,13 @@ var makeAdvert = function() {
   };
 };
 
+// формируем массивы объектов
 var adverts = [];
 for (var i = 0; i < 8; i++) {
   adverts.push(makeAdvert());
 }
+// console.log(adverts);
+
 // иммитация активного  режима
 var activeMap = document.querySelector('.map');
 activeMap.classList.remove('map--faded');
@@ -105,13 +111,10 @@ activeMap.classList.remove('map--faded');
 var similarListElement = document.querySelector('.map__pins');
 var mapPinTemplate = document.querySelector('#pin');
 
-console.log(adverts);
-console.log(adverts[0].offer.title);
 // создание своего  элемента на основе шаблона #card
-var renderAdvert = function(advert) {
+var renderAdvert = function (advert) {
   var adElement = document.querySelector('#card').cloneNode(true).content;
   var data = advert.offer;
-  console.log(advert.offer.title);
   adElement.querySelector('.popup__title').textContent = data.title;
   adElement.querySelector('.popup__text--price').textContent =
     data.price + '₽/ночь';
@@ -128,7 +131,7 @@ var renderAdvert = function(advert) {
 };
 
 // формируем метку
-var renderPins = function(item) {
+var renderPins = function (item) {
   var pin = mapPinTemplate.cloneNode(true).content;
   pin.querySelector('.map__pin').style.left = item.location.x + 'px';
   pin.querySelector('.map__pin').style.top = item.location.y + 'px';
@@ -150,6 +153,6 @@ card.appendChild(renderAdvert(adverts[0]));
 // отрисовка карточки
 var newElement = document.querySelector('.map');
 newElement.insertBefore(
-  card,
-  document.querySelector('.map__filters-container')
+    card,
+    document.querySelector('.map__filters-container')
 );
