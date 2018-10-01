@@ -32,13 +32,18 @@ var nameOfType = {
   house: 'Дом',
   bungalo: 'Бунгало'
 };
-
+var ESC_KEYCODE = 27;
 var randomAvatars = [];
 var adverts = [];
 var activeMapElement = document.querySelector('.map');
 var similarListElement = document.querySelector('.map__pins');
 var mapPinTemplate = document.querySelector('#pin');
 var pinsWidth = document.querySelector('.map__pins').offsetWidth;
+var mapPinElement = document.querySelector('.map__pin--main');
+var adFormElements = document.querySelectorAll('.ad-form__element');
+var adFormElement = document.querySelector('.ad-form');
+var pinObject = mapPinElement.getBoundingClientRect();
+var addressElement = document.querySelector('#address');
 
 var getRandom = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -142,6 +147,19 @@ var renderAdvert = function (advert) {
   });
   adElement.querySelector('.popup__photos img:nth-child(1)').remove();
   adElement.querySelector('.popup__avatar').src = advert.author.avatar;
+  var popupCloseElement = adElement.querySelector('.popup__close');
+
+  popupCloseElement.addEventListener('click', function () {
+    var cardElement = document.querySelector('.map__card');
+    cardElement.remove();
+  });
+  popupCloseElement.addEventListener('keydown', function (evt) {
+    var cardElement = document.querySelector('.map__card');
+    if (evt.keyCode === ESC_KEYCODE) {
+      cardElement.remove();
+    }
+  });
+
   return adElement;
 };
 
@@ -152,6 +170,17 @@ var renderPins = function (item) {
   pin.querySelector('.map__pin').style.top = item.location.y + 'px';
   pin.querySelector('img').src = item.author.avatar;
   pin.querySelector('img').alt = item.offer.title;
+  pin.querySelector('.map__pin').addEventListener('click', function (evt) {
+    evt.preventDefault();
+    var card = document.createDocumentFragment();
+    card.appendChild(renderAdvert(item));
+    var newElement = document.querySelector('.map');
+    newElement.insertBefore(
+        card,
+        document.querySelector('.map__filters-container')
+    );
+  });
+
   return pin;
 };
 // отрисовка 8 меток
@@ -162,19 +191,25 @@ var render = function () {
     fragment.appendChild(renderPins(adverts[i]));
   }
   similarListElement.appendChild(fragment);
-  var card = document.createDocumentFragment();
-  card.appendChild(renderAdvert(adverts[0]));
-
-  // отрисовка карточки
-  var newElement = document.querySelector('.map');
-  newElement.insertBefore(
-      card,
-      document.querySelector('.map__filters-container')
-  );
 };
 
-activeMapElement.classList.remove('map--faded');
+addressElement.value = pinObject.left + ', ' + pinObject.top;
+// установка свойства disabled формам
+adFormElements.forEach(function (element) {
+  element.setAttribute('disabled', 'true');
+});
+// перевод страницы, формы объявления в активный режим
+var setup = function () {
+  activeMapElement.classList.remove('map--faded');
+  adFormElement.classList.remove('ad-form--disabled');
+  adFormElements.forEach(function (element) {
+    element.removeAttribute('disabled');
+  });
+};
 
-generateMockData();
-
-render();
+mapPinElement.addEventListener('mouseup', function () {
+  setup();
+  generateMockData();
+  render();
+  addressElement.value = pinObject.left + ', ' + pinObject.top;
+});
