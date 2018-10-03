@@ -44,6 +44,18 @@ var adFormElements = document.querySelectorAll('.ad-form__element');
 var adFormElement = document.querySelector('.ad-form');
 var pinObject = mapPinElement.getBoundingClientRect();
 var addressElement = document.querySelector('#address');
+// цена за ночь
+var priceElement = document.querySelector('#price');
+// тип жилья
+var typeElement = document.querySelector('#type');
+// количество комнат
+var roomNumberElement = document.querySelector('#room_number');
+// количество мест
+var capacityElement = document.querySelector('#capacity');
+// время заезда
+var timeinElement = document.querySelector('#timein');
+// время выезда
+var timeoutElement = document.querySelector('#timeout');
 
 var getRandom = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -193,11 +205,15 @@ var render = function () {
   similarListElement.appendChild(fragment);
 };
 
-addressElement.value = pinObject.left + ', ' + pinObject.top;
-// установка свойства disabled формам
-adFormElements.forEach(function (element) {
-  element.setAttribute('disabled', 'true');
-});
+// первоначальная загрузка и установка свойства disabled формам
+var onload = function () {
+  addressElement.value =
+    Math.round(pinObject.left) + ', ' + Math.round(pinObject.top);
+  adFormElements.forEach(function (element) {
+    element.setAttribute('disabled', 'true');
+  });
+};
+
 // перевод страницы, формы объявления в активный режим
 var setup = function () {
   activeMapElement.classList.remove('map--faded');
@@ -207,9 +223,76 @@ var setup = function () {
   });
 };
 
+onload();
 mapPinElement.addEventListener('mouseup', function () {
   setup();
   generateMockData();
   render();
-  addressElement.value = pinObject.left + ', ' + pinObject.top;
+  addressElement.value =
+    Math.round(pinObject.left) + ', ' + Math.round(pinObject.top);
+});
+
+// синхронизация времени выезда и времени заезда
+timeinElement.addEventListener('change', function () {
+  if (timeinElement.value === '12:00') {
+    timeoutElement.value = '12:00';
+  } else if (timeinElement.value === '13:00') {
+    timeoutElement.value = '13:00';
+  } else if (timeinElement.value === '14:00') {
+    timeoutElement.value = '14:00';
+  }
+});
+// синхронизация тип жилья и минимальной цены
+typeElement.addEventListener('change', function () {
+  if (typeElement.value === 'bungalo') {
+    priceElement.min = '0';
+    priceElement.placeholder = '0';
+  } else if (typeElement.value === 'flat') {
+    priceElement.min = '1000';
+    priceElement.placeholder = '1000';
+  } else if (typeElement.value === 'house') {
+    priceElement.min = '5000';
+    priceElement.placeholder = '5000';
+  } else if (typeElement.value === 'palace') {
+    priceElement.min = '10000';
+    priceElement.placeholder = '10000';
+  }
+});
+// синхронизация  количества комнат и количества мест
+roomNumberElement.addEventListener('change', function () {
+  if (roomNumberElement.value === '1') {
+    capacityElement
+      .querySelector('option[value="0"]')
+      .setAttribute('disabled', 'true');
+    capacityElement
+      .querySelector('option[value="2"]')
+      .setAttribute('disabled', 'true');
+    capacityElement
+      .querySelector('option[value="3"]')
+      .setAttribute('disabled', 'true');
+  } else if (roomNumberElement.value === '2') {
+    capacityElement
+      .querySelector('option[value="0"]')
+      .setAttribute('disabled', 'true');
+    capacityElement
+      .querySelector('option[value="1"]')
+      .setAttribute('disabled', 'true');
+    capacityElement
+      .querySelector('option[value="3"]')
+      .setAttribute('disabled', 'true');
+  } else if (roomNumberElement.value === '3') {
+    capacityElement
+      .querySelector('option[value="0"]')
+      .setAttribute('disabled', 'true');
+    capacityElement
+      .querySelector('option[value="1"]')
+      .setAttribute('disabled', 'true');
+    capacityElement
+      .querySelector('option[value="2"]')
+      .setAttribute('disabled', 'true');
+  }
+});
+var buttonSubmit = document.querySelector('.ad-form__submit');
+buttonSubmit.addEventListener('click', function () {
+  adFormElement.action = 'https://js.dump.academy/keksobooking';
 });
