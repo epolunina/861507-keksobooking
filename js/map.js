@@ -271,14 +271,13 @@ mapPinElement.addEventListener('mousedown', function (evt) {
 
     pinObjectTop = mapPinElement.offsetTop - shift.y;
     pinObjectLeft = mapPinElement.offsetLeft - shift.x;
-    console.log(pinObjectTop, pinObjectLeft);
 
-    if (
-      minCoordY < pinObjectTop < maxCoordY &&
-      minCoordX < pinObjectLeft < pinsWidth
-    ) {
+    if (minCoordY < pinObjectTop && maxCoordY > pinObjectTop) {
       mapPinElement.style.top = pinObjectTop + 'px';
-      mapPinElement.style.left = pinObjectLeft + 'px';
+
+      if (minCoordX < pinObjectLeft && pinsWidth > pinObjectLeft) {
+        mapPinElement.style.left = pinObjectLeft + 'px';
+      }
     }
   };
 
@@ -308,12 +307,16 @@ timeinElement.addEventListener('change', function () {
 
 // синхронизация  количества комнат и количества мест
 var valdityRoomCapacity = function () {
-  if (roomNumberElement.value <= capacityElement.value) {
+  var roomCount = roomNumberElement.value;
+  var capacityCount = capacityElement.value;
+  roomCount++;
+  capacityCount++;
+  if (roomCount >= capacityCount) {
+    roomNumberElement.setCustomValidity('');
+  } else {
     roomNumberElement.setCustomValidity(
         'Количество комнат не соответствует количеству гостей'
     );
-  } else {
-    roomNumberElement.setCustomValidity('');
   }
 };
 
