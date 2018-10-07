@@ -32,6 +32,17 @@ var nameOfType = {
   house: 'Дом',
   bungalo: 'Бунгало'
 };
+
+var minPriceOfType = {
+  palace: '10000',
+  flat: '1000',
+  house: '5000',
+  bungalo: '0'
+};
+
+var minCoordY = 130;
+var maxCoordY = 630;
+var minCoordX = 0;
 var ESC_KEYCODE = 27;
 var randomAvatars = [];
 var adverts = [];
@@ -56,6 +67,8 @@ var capacityElement = document.querySelector('#capacity');
 var timeinElement = document.querySelector('#timein');
 // время выезда
 var timeoutElement = document.querySelector('#timeout');
+var pinObjectTop = '';
+var pinObjectLeft = '';
 
 var getRandom = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -224,75 +237,94 @@ var setup = function () {
 };
 
 onload();
-mapPinElement.addEventListener('mouseup', function () {
+
+var onStart = function (upEvt) {
+  upEvt.preventDefault();
   setup();
   generateMockData();
-  render();
+
+  if (adverts.length < 9) {
+    render();
+  }
   addressElement.value =
     Math.round(pinObject.left) + ', ' + Math.round(pinObject.top);
+};
+
+mapPinElement.addEventListener('mousedown', function (evt) {
+  // координаты пина
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
+
+    pinObjectTop = mapPinElement.offsetTop - shift.y;
+    pinObjectLeft = mapPinElement.offsetLeft - shift.x;
+
+    if (minCoordY < pinObjectTop && maxCoordY > pinObjectTop) {
+      mapPinElement.style.top = pinObjectTop + 'px';
+
+      if (minCoordX < pinObjectLeft && pinsWidth > pinObjectLeft) {
+        mapPinElement.style.left = pinObjectLeft + 'px';
+      }
+    }
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    onStart(upEvt);
+    addressElement.value = pinObjectLeft + ', ' + pinObjectTop;
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+
+  document.addEventListener('mousemove', onMouseMove);
+
+  document.addEventListener('mouseup', onMouseUp);
+});
+
+// синхронизация типа жилья и минимальной цены
+typeElement.addEventListener('change', function () {
+  priceElement.min = minPriceOfType[typeElement.value];
+  priceElement.placeholder = minPriceOfType[typeElement.value];
 });
 
 // синхронизация времени выезда и времени заезда
 timeinElement.addEventListener('change', function () {
-  if (timeinElement.value === '12:00') {
-    timeoutElement.value = '12:00';
-  } else if (timeinElement.value === '13:00') {
-    timeoutElement.value = '13:00';
-  } else if (timeinElement.value === '14:00') {
-    timeoutElement.value = '14:00';
-  }
+  timeoutElement.value = timeinElement.value;
 });
-// синхронизация тип жилья и минимальной цены
-typeElement.addEventListener('change', function () {
-  if (typeElement.value === 'bungalo') {
-    priceElement.min = '0';
-    priceElement.placeholder = '0';
-  } else if (typeElement.value === 'flat') {
-    priceElement.min = '1000';
-    priceElement.placeholder = '1000';
-  } else if (typeElement.value === 'house') {
-    priceElement.min = '5000';
-    priceElement.placeholder = '5000';
-  } else if (typeElement.value === 'palace') {
-    priceElement.min = '10000';
-    priceElement.placeholder = '10000';
-  }
-});
+
 // синхронизация  количества комнат и количества мест
-roomNumberElement.addEventListener('change', function () {
-  if (roomNumberElement.value === '1') {
-    capacityElement
-      .querySelector('option[value="0"]')
-      .setAttribute('disabled', 'true');
-    capacityElement
-      .querySelector('option[value="2"]')
-      .setAttribute('disabled', 'true');
-    capacityElement
-      .querySelector('option[value="3"]')
-      .setAttribute('disabled', 'true');
-  } else if (roomNumberElement.value === '2') {
-    capacityElement
-      .querySelector('option[value="0"]')
-      .setAttribute('disabled', 'true');
-    capacityElement
-      .querySelector('option[value="1"]')
-      .setAttribute('disabled', 'true');
-    capacityElement
-      .querySelector('option[value="3"]')
-      .setAttribute('disabled', 'true');
-  } else if (roomNumberElement.value === '3') {
-    capacityElement
-      .querySelector('option[value="0"]')
-      .setAttribute('disabled', 'true');
-    capacityElement
-      .querySelector('option[value="1"]')
-      .setAttribute('disabled', 'true');
-    capacityElement
-      .querySelector('option[value="2"]')
-      .setAttribute('disabled', 'true');
+var valdityRoomCapacity = function () {
+  var roomCount = roomNumberElement.value;
+  var capacityCount = capacityElement.value;
+  roomCount++;
+  capacityCount++;
+  if (roomCount >= capacityCount) {
+    roomNumberElement.setCustomValidity('');
+  } else {
+    roomNumberElement.setCustomValidity(
+        'Количество комнат не соответствует количеству гостей'
+    );
   }
-});
+};
+
+roomNumberElement.addEventListener('change', valdityRoomCapacity);
+capacityElement.addEventListener('change', valdityRoomCapacity);
+
 var buttonSubmit = document.querySelector('.ad-form__submit');
 buttonSubmit.addEventListener('click', function () {
+  valdityRoomCapacity();
   adFormElement.action = 'https://js.dump.academy/keksobooking';
 });
