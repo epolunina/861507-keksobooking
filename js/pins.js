@@ -31,7 +31,9 @@
     }
     similarListElement.appendChild(fragment);
   };
+
   window.pins = {
-    render: render
+    render: render,
+    renderPins: renderPins
   };
 })();

@@ -24,7 +24,8 @@
   var maxCoordY = 630;
   var minCoordX = 0;
   var maxCoordX = pinsWidth - widthOfPin;
-
+  var ESC_KEYCODE = 27;
+  var errorEl = document.querySelector('#error');
   var minPriceOfType = {
     palace: '10000',
     flat: '1000',
@@ -110,10 +111,39 @@
   roomNumberElement.addEventListener('change', valdityRoomCapacity);
   capacityElement.addEventListener('change', valdityRoomCapacity);
 
+  var mainElement = document.querySelector('main');
+
+  // добавление элемента с ошибкой
+  var errorHandler = function () {
+    var errorElementTempl = errorEl.cloneNode(true).content;
+    var erElement = document.createDocumentFragment();
+    erElement.appendChild(errorElementTempl);
+  };
+  // добавление элемента об успехе
+  var successEl = document.querySelector('#success');
+
+  var successHandler = function () {
+    var successElementTempl = successEl.cloneNode(true).content;
+    var scElement = document.createDocumentFragment();
+    scElement.appendChild(successElementTempl);
+    mainElement.appendChild(scElement);
+    adFormElement.reset();
+    document.addEventListener('click', function (evt) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        scElement.classlist.add('hidden');
+      }
+    });
+  };
   // отправка формы
   var buttonSubmit = document.querySelector('.ad-form__submit');
   buttonSubmit.addEventListener('click', function () {
     valdityRoomCapacity();
-    adFormElement.action = 'https://js.dump.academy/keksobooking';
+  });
+  adFormElement.addEventListener('submit', function () {
+    window.backend.upload(
+        new FormData(adFormElement),
+        successHandler,
+        errorHandler
+    );
   });
 })();
