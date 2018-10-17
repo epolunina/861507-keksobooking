@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var URL = 'https://js.dump.academy/keksobooking1';
+  var URL = 'https://js.dump.academy/keksobooking';
   var URL1 = 'https://js.dump.academy/keksobooking/data';
   var errorElement = document.querySelector('.error__message');
   // функция получения данных с сервера

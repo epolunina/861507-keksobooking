@@ -28,17 +28,6 @@
   };
   //  обработка успешной загрузки объявлений
   var successHandlerLoad = function (adverts) {
-    /*
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < window.data.adverts.length; i++) {
-      fragment.appendChild(window.pins.renderPins(adverts[i]));
-    }
-    similarListElement.appendChild(fragment);
-
-    if (adverts.length < 9) {
-      window.pins.render();
-    }
-    */
     window.data.adverts = adverts;
   };
   // обработка ошибки при не успешной загрузки объявлений
@@ -61,6 +50,8 @@
   };
 
   window.map = {
-    onStart: onStart
+    onStart: onStart,
+    onload: onload,
+    setup: setup
   };
 })();

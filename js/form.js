@@ -1,7 +1,8 @@
 'use strict';
 (function () {
+  var mapPinsElement = document.querySelectorAll('.map__pin');
   var pinsWidth = document.querySelector('.map__pins').offsetWidth;
-  // var activeMapElement = document.querySelector('.map');
+
   var adFormElement = document.querySelector('.ad-form');
   // цена за ночь
   var priceElement = document.querySelector('#price');
@@ -17,7 +18,7 @@
   var timeoutElement = document.querySelector('#timeout');
   var pinObjectTop = '';
   var pinObjectLeft = '';
-  // var adFormElements = document.querySelectorAll('.ad-form__element');
+
   var addressElement = document.querySelector('#address');
   var widthOfPin = 40;
   var minCoordY = 130;
@@ -32,10 +33,9 @@
     house: '5000',
     bungalo: '0'
   };
-
+  var mainElement = document.querySelector('main');
   // события  при нажатии мыши
   var mapPinElement = document.querySelector('.map__pin--main');
-  // var pinObject = mapPinElement.getBoundingClientRect();
 
   mapPinElement.addEventListener('mousedown', function (evt) {
     // координаты пина
@@ -111,7 +111,16 @@
   roomNumberElement.addEventListener('change', valdityRoomCapacity);
   capacityElement.addEventListener('change', valdityRoomCapacity);
 
-  var mainElement = document.querySelector('main');
+  var startMode = function () {
+    mapPinsElement.forEach(function (element) {
+      element.remove();
+    });
+    // mapPinsElement.remove();
+    window.map.setup();
+    adFormElement.reset();
+  };
+
+  var buttonReset = document.querySelector('.ad-form__reset');
 
   // добавление элемента с ошибкой
   var errorHandler = function () {
@@ -122,24 +131,39 @@
   // добавление элемента об успехе
   var successEl = document.querySelector('#success');
 
+  // var successElem = document.querySelector('.success');
+  // var elemRemove = function () {
+  //  successElem.remove();
+  // };
+
   var successHandler = function () {
     var successElementTempl = successEl.cloneNode(true).content;
     var scElement = document.createDocumentFragment();
     scElement.appendChild(successElementTempl);
     mainElement.appendChild(scElement);
-    adFormElement.reset();
-    document.addEventListener('click', function (evt) {
+    var successElem = document.querySelector('.success');
+    document.addEventListener('keydown', function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
-        scElement.classlist.add('hidden');
+        successElem.remove();
       }
     });
+    successElem.addEventListener('click', function () {
+      successElem.remove();
+    });
+    // document.removeEventListener('click', elemRemove);
+
+    startMode();
   };
   // отправка формы
   var buttonSubmit = document.querySelector('.ad-form__submit');
   buttonSubmit.addEventListener('click', function () {
     valdityRoomCapacity();
   });
-  adFormElement.addEventListener('submit', function () {
+  buttonReset.addEventListener('click', function () {
+    startMode();
+  });
+  adFormElement.addEventListener('submit', function (evt) {
+    evt.preventDefault();
     window.backend.upload(
         new FormData(adFormElement),
         successHandler,
