@@ -6,7 +6,6 @@
   var adFormElement = document.querySelector('.ad-form');
   var pinObject = mapPinElement.getBoundingClientRect();
   var addressElement = document.querySelector('#address');
-  // var similarListElement = document.querySelector('.map__pins');
   var errorEl = document.querySelector('.error__message');
   // первоначальная загрузка и установка свойства disabled формам
   var onload = function () {
@@ -42,16 +41,12 @@
   var onStart = function (upEvt) {
     upEvt.preventDefault();
     setup();
-
-    // window.data.generateMockData();
     window.pins.render();
     addressElement.value =
       Math.round(pinObject.left) + ', ' + Math.round(pinObject.top);
   };
 
   window.map = {
-    onStart: onStart,
-    onload: onload,
-    setup: setup
+    onStart: onStart
   };
 })();

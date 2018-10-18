@@ -1,6 +1,5 @@
 'use strict';
 (function () {
-  var mapPinsElement = document.querySelectorAll('.map__pin');
   var pinsWidth = document.querySelector('.map__pins').offsetWidth;
 
   var adFormElement = document.querySelector('.ad-form');
@@ -36,6 +35,9 @@
   var mainElement = document.querySelector('main');
   // события  при нажатии мыши
   var mapPinElement = document.querySelector('.map__pin--main');
+  var buttonReset = document.querySelector('.ad-form__reset');
+  var pinMainStartLeft = mapPinElement.style.left;
+  var pinMainStartTop = mapPinElement.style.top;
 
   mapPinElement.addEventListener('mousedown', function (evt) {
     // координаты пина
@@ -112,30 +114,42 @@
   capacityElement.addEventListener('change', valdityRoomCapacity);
 
   var startMode = function () {
+    var mapPinsElement = document.querySelectorAll(
+        '.map__pin:not(.map__pin--main)'
+    );
     mapPinsElement.forEach(function (element) {
       element.remove();
     });
-    // mapPinsElement.remove();
-    window.map.setup();
     adFormElement.reset();
-  };
+    mapPinElement.style.left = pinMainStartLeft;
+    mapPinElement.style.top = pinMainStartTop;
 
-  var buttonReset = document.querySelector('.ad-form__reset');
+    addressElement.value =
+      mapPinElement.offsetLeft + ', ' + mapPinElement.offsetTop;
+  };
 
   // добавление элемента с ошибкой
   var errorHandler = function () {
     var errorElementTempl = errorEl.cloneNode(true).content;
     var erElement = document.createDocumentFragment();
     erElement.appendChild(errorElementTempl);
+    mainElement.appendChild(erElement);
+    var errorElem = document.querySelector('.error');
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        errorElem.remove();
+      }
+    });
+    errorElem.addEventListener('click', function () {
+      errorElem.remove();
+    });
+    var errorButton = document.querySelector('.error__button');
+    errorButton.addEventListener('click', function () {
+      errorElem.remove();
+    });
   };
   // добавление элемента об успехе
   var successEl = document.querySelector('#success');
-
-  // var successElem = document.querySelector('.success');
-  // var elemRemove = function () {
-  //  successElem.remove();
-  // };
-
   var successHandler = function () {
     var successElementTempl = successEl.cloneNode(true).content;
     var scElement = document.createDocumentFragment();
@@ -150,7 +164,6 @@
     successElem.addEventListener('click', function () {
       successElem.remove();
     });
-    // document.removeEventListener('click', elemRemove);
 
     startMode();
   };

@@ -2,6 +2,8 @@
 
 (function () {
   var URL = 'https://js.dump.academy/keksobooking';
+  // var URL =
+  //  'https://code.tutsplus.com/ru/tutorials/the-30-css-selectors-you-must-memorize--net-16048';
   var URL1 = 'https://js.dump.academy/keksobooking/data';
   var errorElement = document.querySelector('.error__message');
   // функция получения данных с сервера
@@ -30,11 +32,11 @@
     xhr.addEventListener('load', function () {
       onLoad(xhr.response);
     });
-    xhr.open('POST', URL);
-    xhr.send(data);
     xhr.addEventListener('error', function () {
       onError(errorElement);
     });
+    xhr.open('POST', URL);
+    xhr.send(data);
   };
   window.backend = {
     upload: upload,
