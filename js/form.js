@@ -38,6 +38,8 @@
   var buttonReset = document.querySelector('.ad-form__reset');
   var pinMainStartLeft = mapPinElement.style.left;
   var pinMainStartTop = mapPinElement.style.top;
+  var activeMapElement = document.querySelector('.map');
+  var adFormElements = document.querySelectorAll('.ad-form__element');
 
   mapPinElement.addEventListener('mousedown', function (evt) {
     // координаты пина
@@ -113,6 +115,13 @@
   roomNumberElement.addEventListener('change', valdityRoomCapacity);
   capacityElement.addEventListener('change', valdityRoomCapacity);
 
+  var unactivMode = function () {
+    activeMapElement.classList.add('map--faded');
+    adFormElement.classList.add('ad-form--disabled');
+    adFormElements.forEach(function (element) {
+      element.setAttribute('disabled', 'true');
+    });
+  };
   var startMode = function () {
     var mapPinsElement = document.querySelectorAll(
         '.map__pin:not(.map__pin--main)'
@@ -126,6 +135,7 @@
 
     addressElement.value =
       mapPinElement.offsetLeft + ', ' + mapPinElement.offsetTop;
+    unactivMode();
   };
 
   // добавление элемента с ошибкой
@@ -164,7 +174,6 @@
     successElem.addEventListener('click', function () {
       successElem.remove();
     });
-
     startMode();
   };
   // отправка формы
