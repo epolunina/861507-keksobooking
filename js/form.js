@@ -1,7 +1,7 @@
 'use strict';
 (function () {
   var pinsWidth = document.querySelector('.map__pins').offsetWidth;
-  // var activeMapElement = document.querySelector('.map');
+
   var adFormElement = document.querySelector('.ad-form');
   // цена за ночь
   var priceElement = document.querySelector('#price');
@@ -17,24 +17,29 @@
   var timeoutElement = document.querySelector('#timeout');
   var pinObjectTop = '';
   var pinObjectLeft = '';
-  // var adFormElements = document.querySelectorAll('.ad-form__element');
+
   var addressElement = document.querySelector('#address');
   var widthOfPin = 40;
   var minCoordY = 130;
   var maxCoordY = 630;
   var minCoordX = 0;
   var maxCoordX = pinsWidth - widthOfPin;
-
+  var ESC_KEYCODE = 27;
+  var errorEl = document.querySelector('#error');
   var minPriceOfType = {
     palace: '10000',
     flat: '1000',
     house: '5000',
     bungalo: '0'
   };
-
+  var mainElement = document.querySelector('main');
   // события  при нажатии мыши
   var mapPinElement = document.querySelector('.map__pin--main');
-  // var pinObject = mapPinElement.getBoundingClientRect();
+  var buttonReset = document.querySelector('.ad-form__reset');
+  var pinMainStartLeft = mapPinElement.style.left;
+  var pinMainStartTop = mapPinElement.style.top;
+  var activeMapElement = document.querySelector('.map');
+  var adFormElements = document.querySelectorAll('.ad-form__element');
 
   mapPinElement.addEventListener('mousedown', function (evt) {
     // координаты пина
@@ -110,10 +115,81 @@
   roomNumberElement.addEventListener('change', valdityRoomCapacity);
   capacityElement.addEventListener('change', valdityRoomCapacity);
 
+  var unactivMode = function () {
+    activeMapElement.classList.add('map--faded');
+    adFormElement.classList.add('ad-form--disabled');
+    adFormElements.forEach(function (element) {
+      element.setAttribute('disabled', 'true');
+    });
+  };
+  var startMode = function () {
+    var mapPinsElement = document.querySelectorAll(
+        '.map__pin:not(.map__pin--main)'
+    );
+    mapPinsElement.forEach(function (element) {
+      element.remove();
+    });
+    adFormElement.reset();
+    mapPinElement.style.left = pinMainStartLeft;
+    mapPinElement.style.top = pinMainStartTop;
+
+    addressElement.value =
+      mapPinElement.offsetLeft + ', ' + mapPinElement.offsetTop;
+    unactivMode();
+  };
+
+  // добавление элемента с ошибкой
+  var errorHandler = function () {
+    var errorElementTempl = errorEl.cloneNode(true).content;
+    var erElement = document.createDocumentFragment();
+    erElement.appendChild(errorElementTempl);
+    mainElement.appendChild(erElement);
+    var errorElem = document.querySelector('.error');
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        errorElem.remove();
+      }
+    });
+    errorElem.addEventListener('click', function () {
+      errorElem.remove();
+    });
+    var errorButton = document.querySelector('.error__button');
+    errorButton.addEventListener('click', function () {
+      errorElem.remove();
+    });
+  };
+  // добавление элемента об успехе
+  var successEl = document.querySelector('#success');
+  var successHandler = function () {
+    var successElementTempl = successEl.cloneNode(true).content;
+    var scElement = document.createDocumentFragment();
+    scElement.appendChild(successElementTempl);
+    mainElement.appendChild(scElement);
+    var successElem = document.querySelector('.success');
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === ESC_KEYCODE) {
+        successElem.remove();
+      }
+    });
+    successElem.addEventListener('click', function () {
+      successElem.remove();
+    });
+    startMode();
+  };
   // отправка формы
   var buttonSubmit = document.querySelector('.ad-form__submit');
   buttonSubmit.addEventListener('click', function () {
     valdityRoomCapacity();
-    adFormElement.action = 'https://js.dump.academy/keksobooking';
+  });
+  buttonReset.addEventListener('click', function () {
+    startMode();
+  });
+  adFormElement.addEventListener('submit', function (evt) {
+    evt.preventDefault();
+    window.backend.upload(
+        new FormData(adFormElement),
+        successHandler,
+        errorHandler
+    );
   });
 })();

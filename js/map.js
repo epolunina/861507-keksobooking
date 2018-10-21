@@ -6,7 +6,7 @@
   var adFormElement = document.querySelector('.ad-form');
   var pinObject = mapPinElement.getBoundingClientRect();
   var addressElement = document.querySelector('#address');
-
+  var errorEl = document.querySelector('.error__message');
   // первоначальная загрузка и установка свойства disabled формам
   var onload = function () {
     addressElement.value =
@@ -14,6 +14,7 @@
     adFormElements.forEach(function (element) {
       element.setAttribute('disabled', 'true');
     });
+    window.backend.load(successHandlerLoad, errorHandlerLoad);
   };
 
   // перевод страницы, формы объявления в активный режим
@@ -24,17 +25,23 @@
       element.removeAttribute('disabled');
     });
   };
+  //  обработка успешной загрузки объявлений
+  var successHandlerLoad = function (adverts) {
+    window.data.adverts = adverts;
+  };
+  // обработка ошибки при не успешной загрузки объявлений
+  var errorHandlerLoad = function () {
+    var errorElementTempl = errorEl.cloneNode(true).content;
+    var erElement = document.createDocumentFragment();
+    erElement.appendChild(errorElementTempl);
+  };
 
   onload();
 
   var onStart = function (upEvt) {
     upEvt.preventDefault();
     setup();
-    window.data.generateMockData();
-
-    if (window.data.adverts.length < 9) {
-      window.pins.render();
-    }
+    window.pins.render();
     addressElement.value =
       Math.round(pinObject.left) + ', ' + Math.round(pinObject.top);
   };
