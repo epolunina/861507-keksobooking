@@ -86,6 +86,11 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
+  var mapFilter = document.querySelector('.map__filter');
+  mapFilter.addEventListener('change', function () {
+    window.pins.updateAdverts();
+  });
+
   // синхронизация типа жилья и минимальной цены
   typeElement.addEventListener('change', function () {
     priceElement.min = minPriceOfType[typeElement.value];
@@ -115,6 +120,7 @@
   roomNumberElement.addEventListener('change', valdityRoomCapacity);
   capacityElement.addEventListener('change', valdityRoomCapacity);
 
+  // неактивный режим карты
   var unactivMode = function () {
     activeMapElement.classList.add('map--faded');
     adFormElement.classList.add('ad-form--disabled');
@@ -122,6 +128,7 @@
       element.setAttribute('disabled', 'true');
     });
   };
+  // возвращение в начальный режим
   var startMode = function () {
     var mapPinsElement = document.querySelectorAll(
         '.map__pin:not(.map__pin--main)'

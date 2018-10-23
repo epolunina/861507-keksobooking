@@ -31,9 +31,39 @@
     }
     similarListElement.appendChild(fragment);
   };
+  var mapFilter = document.querySelector('.map__filter');
+  var typeFilter = mapFilter.querySelector('#housing-type');
+  var priceFilter = mapFilter.querySelector('#housing-price');
+  var roomsFilter = mapFilter.querySelector('#housing-rooms');
+  var guestsFilter = mapFilter.querySelector('#housing-guests');
+  var updateAdverts = function () {
+    var sameTypeArray = window.data.adverts.filter(function (it) {
+      return it.type === typeFilter.value;
+    });
+    var samePriceArray = window.data.adverts.filter(function (it) {
+      return it.price === priceFilter.value;
+    });
+    var sameRoomsFilter = window.data.adverts.filter(function (it) {
+      return it.rooms === roomsFilter.value;
+    });
+    var sameGuestsFilter = window.data.adverts.filter(function (it) {
+      return it.guests === guestsFilter.value;
+    });
+
+    var filteredAdvert = [];
+
+    filteredAdvert = sameTypeArray.concat(
+        samePriceArray,
+        sameRoomsFilter,
+        sameGuestsFilter
+    );
+
+    render(filteredAdvert);
+  };
 
   window.pins = {
     render: render,
-    renderPins: renderPins
+    renderPins: renderPins,
+    updateAdverts: updateAdverts
   };
 })();

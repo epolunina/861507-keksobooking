@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  /*
   var arrayTitles = [
     'Большая уютная квартира',
     'Маленькая неуютная квартира',
@@ -33,8 +34,9 @@
   };
 
   var randomAvatars = [];
+  */
   var adverts = [];
-
+  /*
   // сортировка массива в случайном порядке
   function shuffle(array) {
     var currentIndex = array.length;
@@ -96,9 +98,9 @@
       adverts.push(makeAdvert());
     }
   };
-
+*/
   window.data = {
-    generateMockData: generateMockData,
+    // generateMockData: generateMockData,
     adverts: adverts
   };
 })();
