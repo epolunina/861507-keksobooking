@@ -40,6 +40,9 @@
   var pinMainStartTop = mapPinElement.style.top;
   var activeMapElement = document.querySelector('.map');
   var adFormElements = document.querySelectorAll('.ad-form__element');
+  var mapPinsElement = document.querySelectorAll(
+      '.map__pin:not(.map__pin--main)'
+  );
 
   mapPinElement.addEventListener('mousedown', function (evt) {
     // координаты пина
@@ -87,7 +90,11 @@
   });
 
   var mapFilter = document.querySelector('.map__filter');
+
   mapFilter.addEventListener('change', function () {
+    mapPinsElement.forEach(function (element) {
+      element.remove();
+    });
     window.pins.updateAdverts();
   });
 
@@ -130,9 +137,9 @@
   };
   // возвращение в начальный режим
   var startMode = function () {
-    var mapPinsElement = document.querySelectorAll(
-        '.map__pin:not(.map__pin--main)'
-    );
+    // var mapPinsElement = document.querySelectorAll(
+    //    '.map__pin:not(.map__pin--main)'
+    // );
     mapPinsElement.forEach(function (element) {
       element.remove();
     });
