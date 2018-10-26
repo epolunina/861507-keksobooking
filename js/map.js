@@ -41,7 +41,7 @@
   var onStart = function (upEvt) {
     upEvt.preventDefault();
     setup();
-    window.pins.render();
+    window.pins.updateAdverts();
     addressElement.value =
       Math.round(pinObject.left) + ', ' + Math.round(pinObject.top);
   };

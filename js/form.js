@@ -43,6 +43,7 @@
   var mapPinsElement = document.querySelectorAll(
       '.map__pin:not(.map__pin--main)'
   );
+  var mapFilter = document.querySelector('.map__filters');
 
   mapPinElement.addEventListener('mousedown', function (evt) {
     // координаты пина
@@ -89,13 +90,16 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  var mapFilter = document.querySelector('.map__filter');
+  var lastTimeout;
+  var debounce = function (fun) {
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+    lastTimeout = window.setTimeout(fun, 500);
+  };
 
   mapFilter.addEventListener('change', function () {
-    mapPinsElement.forEach(function (element) {
-      element.remove();
-    });
-    window.pins.updateAdverts();
+    debounce(window.pins.updateAdverts());
   });
 
   // синхронизация типа жилья и минимальной цены
