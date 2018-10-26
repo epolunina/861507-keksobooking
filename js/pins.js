@@ -115,13 +115,11 @@
       .filter(filterGuests)
       .filter(filterFeatures)
       .slice(0, 5);
-    console.log('filteredAdvert', filteredAdvert[0]);
 
     render(filteredAdvert);
   };
 
   window.pins = {
-    // render: render,
     renderPins: renderPins,
     updateAdverts: updateAdverts
   };

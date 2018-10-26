@@ -99,7 +99,7 @@
   };
 
   mapFilter.addEventListener('change', function () {
-    debounce(window.pins.updateAdverts());
+    debounce(window.pins.updateAdverts);
   });
 
   // синхронизация типа жилья и минимальной цены
