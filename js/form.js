@@ -40,9 +40,9 @@
   var pinMainStartTop = mapPinElement.style.top;
   var activeMapElement = document.querySelector('.map');
   var adFormElements = document.querySelectorAll('.ad-form__element');
-  var mapPinsElement = document.querySelectorAll(
-      '.map__pin:not(.map__pin--main)'
-  );
+  // var mapPinsElement = document.querySelectorAll(
+  //    '.map__pin:not(.map__pin--main)'
+  // );
   var mapFilter = document.querySelector('.map__filters');
 
   mapPinElement.addEventListener('mousedown', function (evt) {
@@ -141,13 +141,14 @@
   };
   // возвращение в начальный режим
   var startMode = function () {
-    // var mapPinsElement = document.querySelectorAll(
-    //    '.map__pin:not(.map__pin--main)'
-    // );
+    var mapPinsElement = document.querySelectorAll(
+        '.map__pin:not(.map__pin--main)'
+    );
     mapPinsElement.forEach(function (element) {
       element.remove();
     });
     adFormElement.reset();
+    window.card.cardRemove();
     mapPinElement.style.left = pinMainStartLeft;
     mapPinElement.style.top = pinMainStartTop;
 
@@ -163,11 +164,14 @@
     erElement.appendChild(errorElementTempl);
     mainElement.appendChild(erElement);
     var errorElem = document.querySelector('.error');
-    document.addEventListener('keydown', function (evt) {
+    var errorEscPress = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
         errorElem.remove();
       }
-    });
+    };
+    document.addEventListener('keydown', errorEscPress);
+    document.removeEventListener('keydown', errorEscPress);
+
     errorElem.addEventListener('click', function () {
       errorElem.remove();
     });

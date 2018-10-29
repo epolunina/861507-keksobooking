@@ -47,8 +47,6 @@
   };
   var mapFilter = document.querySelector('.map__filters');
 
-  //
-
   var updateAdverts = function () {
     var filterType = function (it) {
       var typeFilter = mapFilter.querySelector('#housing-type');

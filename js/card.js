@@ -7,6 +7,25 @@
     house: 'Дом',
     bungalo: 'Бунгало'
   };
+
+  var cardRemove = function () {
+    var cardElement = document.querySelector('.map__card');
+    if (cardElement) {
+      cardElement.remove();
+    }
+  };
+
+  var onPopupClose = function () {
+    cardRemove();
+  };
+
+  var onPopupEscPress = function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      cardRemove();
+    }
+    document.removeEventListener('keydown', onPopupEscPress);
+  };
+
   var renderAdvert = function (advert) {
     // сохранение шаблона всей карточки
     var adElement = document.querySelector('#card').cloneNode(true).content;
@@ -14,6 +33,10 @@
     var popupFeatures = adElement.querySelector('.popup__features');
     var elementFeature = popupFeatures.cloneNode(true);
     var data = advert.offer;
+    var popupCloseElement = adElement.querySelector('.popup__close');
+    cardRemove();
+    popupCloseElement.addEventListener('click', onPopupClose);
+    document.addEventListener('keydown', onPopupEscPress);
     adElement.querySelector('.popup__title').textContent = data.title;
     adElement.querySelector('.popup__text--price').textContent =
       data.price + ' ₽/ночь';
@@ -40,23 +63,12 @@
     });
     adElement.querySelector('.popup__photos img:nth-child(1)').remove();
     adElement.querySelector('.popup__avatar').src = advert.author.avatar;
-    var popupCloseElement = adElement.querySelector('.popup__close');
-
-    popupCloseElement.addEventListener('click', function () {
-      var cardElement = document.querySelector('.map__card');
-      cardElement.remove();
-    });
-    popupCloseElement.addEventListener('keydown', function (evt) {
-      var cardElement = document.querySelector('.map__card');
-      if (evt.keyCode === ESC_KEYCODE) {
-        cardElement.remove();
-      }
-    });
 
     return adElement;
   };
 
   window.card = {
-    renderAdvert: renderAdvert
+    renderAdvert: renderAdvert,
+    cardRemove: cardRemove
   };
 })();
