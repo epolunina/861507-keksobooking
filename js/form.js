@@ -15,8 +15,8 @@
   var timeinElement = document.querySelector('#timein');
   // время выезда
   var timeoutElement = document.querySelector('#timeout');
-  var pinObjectTop = '';
-  var pinObjectLeft = '';
+  var pinObjectTop = 375;
+  var pinObjectLeft = 570;
 
   var addressElement = document.querySelector('#address');
   var widthOfPin = 40;
@@ -135,6 +135,10 @@
   var unactivMode = function () {
     activeMapElement.classList.add('map--faded');
     adFormElement.classList.add('ad-form--disabled');
+    var selectElements = mapFilter.querySelectorAll('select, input');
+    selectElements.forEach(function (element) {
+      element.setAttribute('disabled', 'true');
+    });
     adFormElements.forEach(function (element) {
       element.setAttribute('disabled', 'true');
     });

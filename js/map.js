@@ -7,11 +7,18 @@
   var pinObject = mapPinElement.getBoundingClientRect();
   var addressElement = document.querySelector('#address');
   var errorEl = document.querySelector('.error__message');
+  var mapFilter = document.querySelector('.map__filters');
+  var selectElements = mapFilter.querySelectorAll('select, input');
+
   // первоначальная загрузка и установка свойства disabled формам
   var onload = function () {
     addressElement.value =
       Math.round(pinObject.left) + ', ' + Math.round(pinObject.top);
     adFormElements.forEach(function (element) {
+      element.setAttribute('disabled', 'true');
+    });
+
+    selectElements.forEach(function (element) {
       element.setAttribute('disabled', 'true');
     });
     window.backend.load(successHandlerLoad, errorHandlerLoad);
@@ -21,7 +28,11 @@
   var setup = function () {
     activeMapElement.classList.remove('map--faded');
     adFormElement.classList.remove('ad-form--disabled');
+    addressElement.setAttribute('readonly', 'true');
     adFormElements.forEach(function (element) {
+      element.removeAttribute('disabled');
+    });
+    selectElements.forEach(function (element) {
       element.removeAttribute('disabled');
     });
   };
