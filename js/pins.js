@@ -17,7 +17,6 @@
     pin.querySelector('img').src = item.author.avatar;
     pin.querySelector('img').alt = item.offer.title;
     pin.querySelector('.map__pin').addEventListener('click', function (evt) {
-      evt.currentTarget.classList.add('map__pin--active');
       evt.preventDefault();
       var card = document.createDocumentFragment();
       card.appendChild(window.card.renderAdvert(item));
@@ -27,6 +26,7 @@
           card,
           document.querySelector('.map__filters-container')
       );
+      evt.currentTarget.classList.add('map__pin--active');
     });
 
     return pin;

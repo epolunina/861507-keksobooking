@@ -50,51 +50,53 @@
   var adFormElements = document.querySelectorAll('.ad-form__element');
 
   var mapFilter = document.querySelector('.map__filters');
+  var startCoords = {
+    x: 570,
+    y: 375
+  };
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
 
-  mapPinElement.addEventListener('mousedown', function (evt) {
-    // координаты пина
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: startCoords.y - moveEvt.clientY
     };
-    var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
 
-      var shift = {
-        x: startCoords.x - moveEvt.clientX,
-        y: startCoords.y - moveEvt.clientY
-      };
+    startCoords = {
+      x: moveEvt.clientX,
+      y: moveEvt.clientY
+    };
 
-      startCoords = {
-        x: moveEvt.clientX,
-        y: moveEvt.clientY
-      };
+    Value.pinObjectTop = mapPinElement.offsetTop - shift.y;
+    Value.pinObjectLeft = mapPinElement.offsetLeft - shift.x;
 
-      Value.pinObjectTop = mapPinElement.offsetTop - shift.y;
-      Value.pinObjectLeft = mapPinElement.offsetLeft - shift.x;
+    if (
+      Value.minCoordY < Value.pinObjectTop &&
+      Value.maxCoordY > Value.pinObjectTop
+    ) {
+      mapPinElement.style.top = Value.pinObjectTop + 'px';
 
       if (
-        Value.minCoordY < Value.pinObjectTop &&
-        Value.maxCoordY > Value.pinObjectTop
+        Value.minCoordX < Value.pinObjectLeft &&
+        maxCoordX > Value.pinObjectLeft
       ) {
-        mapPinElement.style.top = Value.pinObjectTop + 'px';
-
-        if (
-          Value.minCoordX < Value.pinObjectLeft &&
-          maxCoordX > Value.pinObjectLeft
-        ) {
-          mapPinElement.style.left = Value.pinObjectLeft + 'px';
-        }
+        mapPinElement.style.left = Value.pinObjectLeft + 'px';
       }
-    };
-
-    // события  при отпускании мыши
-    var onMouseUp = function (upEvt) {
-      upEvt.preventDefault();
-      window.map.onStart(upEvt);
-      addressElement.value = Value.pinObjectLeft + ', ' + Value.pinObjectTop;
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
+    }
+  };
+  // события  при отпускании мыши
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    window.map.onStart(upEvt);
+    addressElement.value = Value.pinObjectLeft + ', ' + Value.pinObjectTop;
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  };
+  mapPinElement.addEventListener('mousedown', function (evt) {
+    // координаты пина
+    startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
     };
 
     document.addEventListener('mousemove', onMouseMove);
@@ -102,6 +104,7 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
+  document.addEventListener('click', onMouseUp);
   var lastTimeout;
   var debounce = function (fun) {
     if (lastTimeout) {
@@ -128,13 +131,13 @@
 
   // синхронизация  количества комнат и количества мест
   var valdityRoomCapacity = function () {
-    var roomCount = roomNumberElement.value;
-    var capacityCount = capacityElement.value;
-    roomCount++;
-    capacityCount++;
+    var roomCount = +roomNumberElement.value;
+    var capacityCount = +capacityElement.value;
+    // roomCount++;
+    // capacityCount++;
     if (roomCount === 100 && capacityCount === 0) {
       roomNumberElement.setCustomValidity('');
-    } else if (roomCount >= capacityCount) {
+    } else if (roomCount >= capacityCount && roomCount !== 100) {
       roomNumberElement.setCustomValidity('');
     } else {
       roomNumberElement.setCustomValidity(
