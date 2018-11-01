@@ -1,18 +1,16 @@
 'use strict';
 (function () {
+  var LIMIT = 5;
+  var RangeOfPrice = {
+    LOW: 10000,
+    MIDDLE: 50000
+  };
+
   var mapPinTemplate = document.querySelector('#pin');
   var similarListElement = document.querySelector('.map__pins');
-
-  var RangeOfPrice = {
-    lowMin: 0,
-    lowMax: 10000,
-    middleMin: 10000,
-    middleMax: 50000,
-    highMin: 50000
-  };
   var filteredAdvert = [];
-  // var adverts = [];
-  var renderPins = function (item) {
+
+  var render = function (item) {
     var pin = mapPinTemplate.cloneNode(true).content;
     pin.querySelector('.map__pin').style.left = item.location.x + 'px';
     pin.querySelector('.map__pin').style.top = item.location.y + 'px';
@@ -35,7 +33,7 @@
   };
   // отрисовка 8 меток
 
-  var render = function (pins) {
+  var renderPins = function (pins) {
     var fragment = document.createDocumentFragment();
     var mapPinsElement = document.querySelectorAll(
         '.map__pin:not(.map__pin--main)'
@@ -43,9 +41,11 @@
     mapPinsElement.forEach(function (element) {
       element.remove();
     });
-    for (var i = 0; i < pins.length; i++) {
-      fragment.appendChild(renderPins(pins[i]));
-    }
+
+    pins.forEach(function (element) {
+      fragment.appendChild(render(element));
+    });
+
     similarListElement.appendChild(fragment);
   };
   var mapFilter = document.querySelector('.map__filters');
@@ -61,16 +61,13 @@
       var priceFilter = mapFilter.querySelector('#housing-price');
       var data = it.offer;
       if (priceFilter.value === 'low') {
-        return (
-          data.price > RangeOfPrice.lowMin && data.price < RangeOfPrice.lowMax
-        );
+        return data.price < RangeOfPrice.LOW;
       } else if (priceFilter.value === 'middle') {
         return (
-          data.price > RangeOfPrice.middleMin &&
-          data.price <= RangeOfPrice.middleMax
+          data.price > RangeOfPrice.LOW && data.price <= RangeOfPrice.MIDDLE
         );
       } else if (priceFilter.value === 'high') {
-        return data.price > RangeOfPrice.highMin;
+        return data.price > RangeOfPrice.MIDDLE;
       }
       return true;
     };
@@ -108,21 +105,19 @@
       return true;
     };
 
-    console.log('Adverts_pins', window.map.adverts);
     filteredAdvert = window.map.adverts
       .filter(filterType)
       .filter(filterPrice)
       .filter(filterRoom)
       .filter(filterGuests)
       .filter(filterFeatures)
-      .slice(0, 5);
+      .slice(0, LIMIT);
 
-    render(filteredAdvert);
+    renderPins(filteredAdvert);
   };
 
-  console.log('filteredAdvert', filteredAdvert);
   window.pins = {
-    renderPins: renderPins,
+    render: render,
     updateAdverts: updateAdverts
   };
 })();

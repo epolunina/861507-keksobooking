@@ -13,8 +13,7 @@
 
   //  обработка успешной загрузки объявлений
   var successHandlerLoad = function (advert) {
-    adverts = advert;
-    console.log('adverts', adverts);
+    window.map.adverts = advert;
   };
   // первоначальная загрузка и установка свойства disabled формам
   var onLoad = function () {
@@ -29,8 +28,6 @@
     });
 
     window.backend.load(successHandlerLoad, errorHandlerLoad);
-
-    console.log('adverts_load', adverts);
   };
 
   // перевод страницы, формы объявления в активный режим
@@ -64,6 +61,7 @@
   };
 
   window.map = {
-    onStart: onStart
+    onStart: onStart,
+    adverts: adverts
   };
 })();

@@ -1,6 +1,7 @@
 'use strict';
 
 (function () {
+  var STATE_SUCCESS = 200;
   var Address = {
     URL: 'https://js.dump.academy/keksobooking',
     URL1: 'https://js.dump.academy/keksobooking/data'
@@ -11,7 +12,7 @@
     var xhr = new XMLHttpRequest();
     xhr.responseType = 'json';
     xhr.addEventListener('load', function () {
-      if (xhr.status === 200) {
+      if (xhr.status === STATE_SUCCESS) {
         onSuccess(xhr.response);
       } else {
         onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);

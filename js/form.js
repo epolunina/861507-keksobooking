@@ -1,12 +1,23 @@
 'use strict';
 (function () {
-  var widthOfPin = 40;
-  var minCoordY = 130;
-  var maxCoordY = 630;
-  var minCoordX = 0;
-  var pinObjectTop = 375;
-  var pinObjectLeft = 570;
   var ESC_KEYCODE = 27;
+  var TIMEOUT = 500;
+
+  var Value = {
+    widthOfPin: '40',
+    minCoordY: '130',
+    maxCoordY: '630',
+    minCoordX: '0',
+    pinObjectTop: '375',
+    pinObjectLeft: '570'
+  };
+  var MinPriceOfType = {
+    palace: '10000',
+    flat: '1000',
+    house: '5000',
+    bungalo: '0'
+  };
+
   var pinsWidth = document.querySelector('.map__pins').offsetWidth;
 
   var adFormElement = document.querySelector('.ad-form');
@@ -25,15 +36,10 @@
 
   var addressElement = document.querySelector('#address');
 
-  var maxCoordX = pinsWidth - widthOfPin;
+  var maxCoordX = pinsWidth - Value.widthOfPin;
 
   var errorEl = document.querySelector('#error');
-  var MinPriceOfType = {
-    palace: '10000',
-    flat: '1000',
-    house: '5000',
-    bungalo: '0'
-  };
+
   var mainElement = document.querySelector('main');
   // события  при нажатии мыши
   var mapPinElement = document.querySelector('.map__pin--main');
@@ -64,14 +70,20 @@
         y: moveEvt.clientY
       };
 
-      pinObjectTop = mapPinElement.offsetTop - shift.y;
-      pinObjectLeft = mapPinElement.offsetLeft - shift.x;
+      Value.pinObjectTop = mapPinElement.offsetTop - shift.y;
+      Value.pinObjectLeft = mapPinElement.offsetLeft - shift.x;
 
-      if (minCoordY < pinObjectTop && maxCoordY > pinObjectTop) {
-        mapPinElement.style.top = pinObjectTop + 'px';
+      if (
+        Value.minCoordY < Value.pinObjectTop &&
+        Value.maxCoordY > Value.pinObjectTop
+      ) {
+        mapPinElement.style.top = Value.pinObjectTop + 'px';
 
-        if (minCoordX < pinObjectLeft && maxCoordX > pinObjectLeft) {
-          mapPinElement.style.left = pinObjectLeft + 'px';
+        if (
+          Value.minCoordX < Value.pinObjectLeft &&
+          maxCoordX > Value.pinObjectLeft
+        ) {
+          mapPinElement.style.left = Value.pinObjectLeft + 'px';
         }
       }
     };
@@ -80,7 +92,7 @@
     var onMouseUp = function (upEvt) {
       upEvt.preventDefault();
       window.map.onStart(upEvt);
-      addressElement.value = pinObjectLeft + ', ' + pinObjectTop;
+      addressElement.value = Value.pinObjectLeft + ', ' + Value.pinObjectTop;
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
@@ -95,11 +107,11 @@
     if (lastTimeout) {
       window.clearTimeout(lastTimeout);
     }
-    lastTimeout = window.setTimeout(fun, 500);
+    lastTimeout = window.setTimeout(fun, TIMEOUT);
   };
 
   mapFilter.addEventListener('change', function () {
-    window.card.cardRemove();
+    window.card.remove();
     debounce(window.pins.updateAdverts);
   });
 
@@ -120,7 +132,9 @@
     var capacityCount = capacityElement.value;
     roomCount++;
     capacityCount++;
-    if (roomCount >= capacityCount) {
+    if (roomCount === 100 && capacityCount === 0) {
+      roomNumberElement.setCustomValidity('');
+    } else if (roomCount >= capacityCount) {
       roomNumberElement.setCustomValidity('');
     } else {
       roomNumberElement.setCustomValidity(
@@ -153,7 +167,7 @@
       element.remove();
     });
     adFormElement.reset();
-    window.card.cardRemove();
+    window.card.remove();
     mapPinElement.style.left = pinMainStartLeft;
     mapPinElement.style.top = pinMainStartTop;
 
@@ -169,13 +183,13 @@
     erElement.appendChild(errorElementTempl);
     mainElement.appendChild(erElement);
     var errorElem = document.querySelector('.error');
-    var errorEscPress = function (evt) {
+    var onEscError = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
         errorElem.remove();
       }
     };
-    document.addEventListener('keydown', errorEscPress);
-    document.removeEventListener('keydown', errorEscPress);
+    document.addEventListener('keydown', onEscError);
+    document.removeEventListener('keydown', onEscError);
 
     errorElem.addEventListener('click', function () {
       errorElem.remove();
@@ -193,13 +207,13 @@
     scElement.appendChild(successElementTempl);
     mainElement.appendChild(scElement);
     var successElem = document.querySelector('.success');
-    var successEscPress = function (evt) {
+    var onEscSuccess = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
         successElem.remove();
       }
     };
-    document.addEventListener('keydown', successEscPress);
-    document.removeEventListener('keydown', successEscPress);
+    document.addEventListener('keydown', onEscSuccess);
+    document.removeEventListener('keydown', onEscSuccess);
     successElem.addEventListener('click', function () {
       successElem.remove();
     });
