@@ -54,6 +54,7 @@
     x: 570,
     y: 375
   };
+  var lastTimeout;
   var onMouseMove = function (moveEvt) {
     moveEvt.preventDefault();
 
@@ -91,6 +92,7 @@
     addressElement.value = Value.pinObjectLeft + ', ' + Value.pinObjectTop;
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
+    mapPinElement.removeEventListener('click', onMouseUp);
   };
   mapPinElement.addEventListener('mousedown', function (evt) {
     // координаты пина
@@ -104,8 +106,8 @@
     document.addEventListener('mouseup', onMouseUp);
   });
 
-  document.addEventListener('click', onMouseUp);
-  var lastTimeout;
+  mapPinElement.addEventListener('click', onMouseUp);
+
   var debounce = function (fun) {
     if (lastTimeout) {
       window.clearTimeout(lastTimeout);
@@ -160,6 +162,8 @@
     adFormElements.forEach(function (element) {
       element.setAttribute('disabled', 'true');
     });
+    mapFilter.reset();
+    mapPinElement.addEventListener('click', onMouseUp);
   };
   // возвращение в начальный режим
   var setStartMode = function () {
