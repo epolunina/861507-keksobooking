@@ -1,5 +1,12 @@
 'use strict';
 (function () {
+  var widthOfPin = 40;
+  var minCoordY = 130;
+  var maxCoordY = 630;
+  var minCoordX = 0;
+  var pinObjectTop = 375;
+  var pinObjectLeft = 570;
+  var ESC_KEYCODE = 27;
   var pinsWidth = document.querySelector('.map__pins').offsetWidth;
 
   var adFormElement = document.querySelector('.ad-form');
@@ -15,18 +22,13 @@
   var timeinElement = document.querySelector('#timein');
   // время выезда
   var timeoutElement = document.querySelector('#timeout');
-  var pinObjectTop = 375;
-  var pinObjectLeft = 570;
 
   var addressElement = document.querySelector('#address');
-  var widthOfPin = 40;
-  var minCoordY = 130;
-  var maxCoordY = 630;
-  var minCoordX = 0;
+
   var maxCoordX = pinsWidth - widthOfPin;
-  var ESC_KEYCODE = 27;
+
   var errorEl = document.querySelector('#error');
-  var minPriceOfType = {
+  var MinPriceOfType = {
     palace: '10000',
     flat: '1000',
     house: '5000',
@@ -40,9 +42,7 @@
   var pinMainStartTop = mapPinElement.style.top;
   var activeMapElement = document.querySelector('.map');
   var adFormElements = document.querySelectorAll('.ad-form__element');
-  // var mapPinsElement = document.querySelectorAll(
-  //    '.map__pin:not(.map__pin--main)'
-  // );
+
   var mapFilter = document.querySelector('.map__filters');
 
   mapPinElement.addEventListener('mousedown', function (evt) {
@@ -99,13 +99,14 @@
   };
 
   mapFilter.addEventListener('change', function () {
+    window.card.cardRemove();
     debounce(window.pins.updateAdverts);
   });
 
   // синхронизация типа жилья и минимальной цены
   typeElement.addEventListener('change', function () {
-    priceElement.min = minPriceOfType[typeElement.value];
-    priceElement.placeholder = minPriceOfType[typeElement.value];
+    priceElement.min = MinPriceOfType[typeElement.value];
+    priceElement.placeholder = MinPriceOfType[typeElement.value];
   });
 
   // синхронизация времени выезда и времени заезда
@@ -132,7 +133,7 @@
   capacityElement.addEventListener('change', valdityRoomCapacity);
 
   // неактивный режим карты
-  var unactivMode = function () {
+  var setUnactiveMode = function () {
     activeMapElement.classList.add('map--faded');
     adFormElement.classList.add('ad-form--disabled');
     var selectElements = mapFilter.querySelectorAll('select, input');
@@ -144,7 +145,7 @@
     });
   };
   // возвращение в начальный режим
-  var startMode = function () {
+  var setStartMode = function () {
     var mapPinsElement = document.querySelectorAll(
         '.map__pin:not(.map__pin--main)'
     );
@@ -158,7 +159,7 @@
 
     addressElement.value =
       mapPinElement.offsetLeft + ', ' + mapPinElement.offsetTop;
-    unactivMode();
+    setUnactiveMode();
   };
 
   // добавление элемента с ошибкой
@@ -192,15 +193,17 @@
     scElement.appendChild(successElementTempl);
     mainElement.appendChild(scElement);
     var successElem = document.querySelector('.success');
-    document.addEventListener('keydown', function (evt) {
+    var successEscPress = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
         successElem.remove();
       }
-    });
+    };
+    document.addEventListener('keydown', successEscPress);
+    document.removeEventListener('keydown', successEscPress);
     successElem.addEventListener('click', function () {
       successElem.remove();
     });
-    startMode();
+    setStartMode();
   };
   // отправка формы
   var buttonSubmit = document.querySelector('.ad-form__submit');
@@ -208,7 +211,7 @@
     valdityRoomCapacity();
   });
   buttonReset.addEventListener('click', function () {
-    startMode();
+    setStartMode();
   });
   adFormElement.addEventListener('submit', function (evt) {
     evt.preventDefault();

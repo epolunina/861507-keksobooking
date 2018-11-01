@@ -10,7 +10,8 @@
     middleMax: 50000,
     highMin: 50000
   };
-
+  var filteredAdvert = [];
+  // var adverts = [];
   var renderPins = function (item) {
     var pin = mapPinTemplate.cloneNode(true).content;
     pin.querySelector('.map__pin').style.left = item.location.x + 'px';
@@ -18,7 +19,7 @@
     pin.querySelector('img').src = item.author.avatar;
     pin.querySelector('img').alt = item.offer.title;
     pin.querySelector('.map__pin').addEventListener('click', function (evt) {
-      evt.target.classList.add('map__pin--active');
+      evt.currentTarget.classList.add('map__pin--active');
       evt.preventDefault();
       var card = document.createDocumentFragment();
       card.appendChild(window.card.renderAdvert(item));
@@ -107,8 +108,8 @@
       return true;
     };
 
-    var filteredAdvert = [];
-    filteredAdvert = window.data.adverts
+    console.log('Adverts_pins', window.map.adverts);
+    filteredAdvert = window.map.adverts
       .filter(filterType)
       .filter(filterPrice)
       .filter(filterRoom)
@@ -119,6 +120,7 @@
     render(filteredAdvert);
   };
 
+  console.log('filteredAdvert', filteredAdvert);
   window.pins = {
     renderPins: renderPins,
     updateAdverts: updateAdverts

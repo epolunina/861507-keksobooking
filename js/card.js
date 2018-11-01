@@ -1,7 +1,7 @@
 'use strict';
 (function () {
   var ESC_KEYCODE = 27;
-  var nameOfType = {
+  var NameOfType = {
     palace: 'Дворец',
     flat: 'Квартира',
     house: 'Дом',
@@ -12,6 +12,12 @@
     var cardElement = document.querySelector('.map__card');
     if (cardElement) {
       cardElement.remove();
+      var mapPinElements = document.querySelectorAll(
+          '.map__pin:not(.map__pin--main)'
+      );
+      mapPinElements.forEach(function (element) {
+        element.classList.remove('map__pin--active');
+      });
     }
   };
 
@@ -40,7 +46,7 @@
     adElement.querySelector('.popup__title').textContent = data.title;
     adElement.querySelector('.popup__text--price').textContent =
       data.price + ' ₽/ночь';
-    adElement.querySelector('.popup__type').textContent = nameOfType[data.type];
+    adElement.querySelector('.popup__type').textContent = NameOfType[data.type];
     adElement.querySelector('.popup__text--capacity').textContent =
       data.rooms + ' комнаты для ' + data.guests + ' гостей';
     adElement.querySelector('.popup__text--time').textContent =

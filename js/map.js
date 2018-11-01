@@ -9,9 +9,15 @@
   var errorEl = document.querySelector('.error__message');
   var mapFilter = document.querySelector('.map__filters');
   var selectElements = mapFilter.querySelectorAll('select, input');
+  var adverts = [];
 
+  //  обработка успешной загрузки объявлений
+  var successHandlerLoad = function (advert) {
+    adverts = advert;
+    console.log('adverts', adverts);
+  };
   // первоначальная загрузка и установка свойства disabled формам
-  var onload = function () {
+  var onLoad = function () {
     addressElement.value =
       Math.round(pinObject.left) + ', ' + Math.round(pinObject.top);
     adFormElements.forEach(function (element) {
@@ -21,11 +27,14 @@
     selectElements.forEach(function (element) {
       element.setAttribute('disabled', 'true');
     });
+
     window.backend.load(successHandlerLoad, errorHandlerLoad);
+
+    console.log('adverts_load', adverts);
   };
 
   // перевод страницы, формы объявления в активный режим
-  var setup = function () {
+  var setActiveMode = function () {
     activeMapElement.classList.remove('map--faded');
     adFormElement.classList.remove('ad-form--disabled');
     addressElement.setAttribute('readonly', 'true');
@@ -36,10 +45,7 @@
       element.removeAttribute('disabled');
     });
   };
-  //  обработка успешной загрузки объявлений
-  var successHandlerLoad = function (adverts) {
-    window.data.adverts = adverts;
-  };
+
   // обработка ошибки при не успешной загрузки объявлений
   var errorHandlerLoad = function () {
     var errorElementTempl = errorEl.cloneNode(true).content;
@@ -47,11 +53,11 @@
     erElement.appendChild(errorElementTempl);
   };
 
-  onload();
+  onLoad();
 
   var onStart = function (upEvt) {
     upEvt.preventDefault();
-    setup();
+    setActiveMode();
     window.pins.updateAdverts();
     addressElement.value =
       Math.round(pinObject.left) + ', ' + Math.round(pinObject.top);
