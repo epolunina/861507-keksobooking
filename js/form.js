@@ -38,7 +38,7 @@
 
   var maxCoordX = pinsWidth - Value.widthOfPin;
 
-  var errorEl = document.querySelector('#error');
+  // var errorEl = document.querySelector('#error');
 
   var mainElement = document.querySelector('main');
   // события  при нажатии мыши
@@ -131,15 +131,21 @@
     timeoutElement.value = timeinElement.value;
   });
 
+  timeoutElement.addEventListener('change', function () {
+    timeinElement.value = timeoutElement.value;
+  });
   // синхронизация  количества комнат и количества мест
   var valdityRoomCapacity = function () {
     var roomCount = +roomNumberElement.value;
     var capacityCount = +capacityElement.value;
-    // roomCount++;
-    // capacityCount++;
+
     if (roomCount === 100 && capacityCount === 0) {
       roomNumberElement.setCustomValidity('');
-    } else if (roomCount >= capacityCount && roomCount !== 100) {
+    } else if (
+      roomCount >= capacityCount &&
+      roomCount !== 100 &&
+      capacityCount !== 0
+    ) {
       roomNumberElement.setCustomValidity('');
     } else {
       roomNumberElement.setCustomValidity(
@@ -184,35 +190,35 @@
   };
 
   // добавление элемента с ошибкой
-  var errorHandler = function () {
-    var errorElementTempl = errorEl.cloneNode(true).content;
-    var erElement = document.createDocumentFragment();
-    erElement.appendChild(errorElementTempl);
-    mainElement.appendChild(erElement);
-    var errorElem = document.querySelector('.error');
-    var onEscError = function (evt) {
-      if (evt.keyCode === ESC_KEYCODE) {
-        errorElem.remove();
-      }
-    };
-    document.addEventListener('keydown', onEscError);
-    document.removeEventListener('keydown', onEscError);
+  // var errorHandler = function () {
+  //   var errorElementTempl = errorEl.cloneNode(true).content;
+  //   var erElement = document.createDocumentFragment();
+  //   erElement.appendChild(errorElementTempl);
+  //   mainElement.appendChild(erElement);
+  //   var errorElem = document.querySelector('.error');
+  //   var onEscError = function (evt) {
+  //     if (evt.keyCode === ESC_KEYCODE) {
+  //       errorElem.remove();
+  //       document.removeEventListener('keydown', onEscError);
+  //     }
+  //   };
+  //   document.addEventListener('keydown', onEscError);
 
-    errorElem.addEventListener('click', function () {
-      errorElem.remove();
-    });
-    var errorButton = document.querySelector('.error__button');
-    errorButton.addEventListener('click', function () {
-      errorElem.remove();
-    });
-  };
+  //   errorElem.addEventListener('click', function () {
+  //     errorElem.remove();
+  //   });
+  //   var errorButton = document.querySelector('.error__button');
+  //   errorButton.addEventListener('click', function () {
+  //     errorElem.remove();
+  //   });
+  // };
   // добавление элемента об успехе
   var successEl = document.querySelector('#success');
   var successHandler = function () {
     var successElementTempl = successEl.cloneNode(true).content;
-    var scElement = document.createDocumentFragment();
-    scElement.appendChild(successElementTempl);
-    mainElement.appendChild(scElement);
+    // var scElement = document.createDocumentFragment();
+    // scElement.appendChild(successElementTempl);
+    mainElement.appendChild(successElementTempl);
     var successElem = document.querySelector('.success');
     var onEscSuccess = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
@@ -236,10 +242,6 @@
   });
   adFormElement.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.backend.upload(
-        new FormData(adFormElement),
-        successHandler,
-        errorHandler
-    );
+    window.backend.upload(new FormData(adFormElement), successHandler);
   });
 })();

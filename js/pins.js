@@ -10,6 +10,7 @@
   var similarListElement = document.querySelector('.map__pins');
   var filteredAdvert = [];
 
+  var container = document.querySelector('.map__filters-container');
   var render = function (item) {
     var pin = mapPinTemplate.cloneNode(true).content;
     pin.querySelector('.map__pin').style.left = item.location.x + 'px';
@@ -18,14 +19,11 @@
     pin.querySelector('img').alt = item.offer.title;
     pin.querySelector('.map__pin').addEventListener('click', function (evt) {
       evt.preventDefault();
-      var card = document.createDocumentFragment();
-      card.appendChild(window.card.renderAdvert(item));
-
+      //  var card = document.createDocumentFragment();
+      // card.appendChild(window.card.renderAdvert(item));
+      var card = window.card.renderAdvert(item);
       var newElement = document.querySelector('.map');
-      newElement.insertBefore(
-          card,
-          document.querySelector('.map__filters-container')
-      );
+      newElement.insertBefore(card, container);
       evt.currentTarget.classList.add('map__pin--active');
     });
 

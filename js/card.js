@@ -1,7 +1,7 @@
 'use strict';
 (function () {
   var ESC_KEYCODE = 27;
-  var NameOfType = {
+  var OfferTypes = {
     palace: 'Дворец',
     flat: 'Квартира',
     house: 'Дом',
@@ -46,7 +46,7 @@
     adElement.querySelector('.popup__title').textContent = data.title;
     adElement.querySelector('.popup__text--price').textContent =
       data.price + ' ₽/ночь';
-    adElement.querySelector('.popup__type').textContent = NameOfType[data.type];
+    adElement.querySelector('.popup__type').textContent = OfferTypes[data.type];
     adElement.querySelector('.popup__text--capacity').textContent =
       data.rooms + ' комнаты для ' + data.guests + ' гостей';
     adElement.querySelector('.popup__text--time').textContent =

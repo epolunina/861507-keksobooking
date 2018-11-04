@@ -6,7 +6,7 @@
   var adFormElement = document.querySelector('.ad-form');
   var pinObject = mapPinElement.getBoundingClientRect();
   var addressElement = document.querySelector('#address');
-  var errorEl = document.querySelector('.error__message');
+  // var errorEl = document.querySelector('.error__message');
   var mapFilter = document.querySelector('.map__filters');
   var selectElements = mapFilter.querySelectorAll('select, input');
   var adverts = [];
@@ -27,7 +27,7 @@
       element.setAttribute('disabled', 'true');
     });
 
-    window.backend.load(successHandlerLoad, errorHandlerLoad);
+    window.backend.load(successHandlerLoad);
   };
 
   // перевод страницы, формы объявления в активный режим
@@ -44,11 +44,11 @@
   };
 
   // обработка ошибки при не успешной загрузки объявлений
-  var errorHandlerLoad = function () {
-    var errorElementTempl = errorEl.cloneNode(true).content;
-    var erElement = document.createDocumentFragment();
-    erElement.appendChild(errorElementTempl);
-  };
+  // var errorHandlerLoad = function () {
+  //   var errorElementTempl = errorEl.cloneNode(true).content;
+  //   var erElement = document.createDocumentFragment();
+  //   erElement.appendChild(errorElementTempl);
+  // };
 
   onLoad();
 
