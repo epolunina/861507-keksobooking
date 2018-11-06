@@ -7,29 +7,28 @@
     SEND_FORM: 'https://js.dump.academy/keksobooking',
     GET_DATA: 'https://js.dump.academy/keksobooking/data'
   };
-  var errorElement = document.querySelector('.error__message');
-  var errorEl = document.querySelector('#error');
+  var errorMessage = document.querySelector('.error__message');
+  var errorContent = document.querySelector('#error').content;
   var mainElement = document.querySelector('main');
   var onError = function () {
-    var errorElementTempl = errorEl.content.cloneNode(true);
+    var errorTemplate = errorContent.cloneNode(true);
+    var errorElement = errorTemplate.querySelector('.error');
+    mainElement.appendChild(errorTemplate);
 
-    mainElement.appendChild(errorElementTempl);
-
-    var errorElem = errorElementTempl.querySelector('.error');
     var onEscError = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
-        errorElem.remove();
+        errorElement.remove();
         document.removeEventListener('keydown', onEscError);
       }
     };
     document.addEventListener('keydown', onEscError);
 
-    errorElem.addEventListener('click', function () {
-      errorElem.remove();
+    errorElement.addEventListener('click', function () {
+      errorElement.remove();
     });
     var errorButton = document.querySelector('.error__button');
     errorButton.addEventListener('click', function () {
-      errorElem.remove();
+      errorElement.remove();
     });
   };
   var ajax = function (onSuccess) {
@@ -43,7 +42,7 @@
       }
     });
     xhr.addEventListener('error', function () {
-      onError(errorElement);
+      onError(errorMessage);
     });
     return xhr;
   };

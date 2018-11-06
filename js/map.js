@@ -1,6 +1,6 @@
 'use strict';
 (function () {
-  var activeMapElement = document.querySelector('.map');
+  // var activeMapElement = document.querySelector('.map');
   var mapPinElement = document.querySelector('.map__pin--main');
 
   var adFormElement = document.querySelector('.ad-form');
@@ -30,7 +30,7 @@
 
   // перевод страницы, формы объявления в активный режим
   var setActiveMode = function () {
-    activeMapElement.classList.remove('map--faded');
+    window.globals.activeMapElement.classList.remove('map--faded');
     adFormElement.classList.remove('ad-form--disabled');
     addressElement.setAttribute('readonly', 'true');
 

@@ -44,9 +44,9 @@
   var buttonReset = document.querySelector('.ad-form__reset');
   var pinMainStartLeft = mapPinElement.style.left;
   var pinMainStartTop = mapPinElement.style.top;
-  var activeMapElement = document.querySelector('.map');
+  // var activeMapElement = document.querySelector('.map');
 
-  var mapFilter = document.querySelector('.map__filters');
+  // var mapFilter = document.querySelector('.map__filters');
   var startCoords = {
     x: 570,
     y: 375
@@ -112,7 +112,7 @@
     lastTimeout = window.setTimeout(fun, TIMEOUT);
   };
 
-  mapFilter.addEventListener('change', function () {
+  window.globals.mapFilter.addEventListener('change', function () {
     window.card.remove();
     debounce(window.pins.updateAdverts);
   });
@@ -156,24 +156,25 @@
 
   // неактивный режим карты
   var setUnactiveMode = function () {
-    activeMapElement.classList.add('map--faded');
+    window.globals.activeMapElement.classList.add('map--faded');
     adFormElement.classList.add('ad-form--disabled');
 
     window.map.selectElements.forEach(function (element) {
       element.setAttribute('disabled', true);
     });
 
-    mapFilter.reset();
+    window.globals.mapFilter.reset();
     mapPinElement.addEventListener('click', onMouseUp);
   };
   // возвращение в начальный режим
   var setStartMode = function () {
-    var mapPinsElement = document.querySelectorAll(
-        '.map__pin:not(.map__pin--main)'
-    );
-    mapPinsElement.forEach(function (element) {
-      element.remove();
-    });
+    // var mapPinsElement = document.querySelectorAll(
+    //     '.map__pin:not(.map__pin--main)'
+    // );
+    // mapPinsElement.forEach(function (element) {
+    //   element.remove();
+    // });
+    window.pins.remove();
     adFormElement.reset();
     window.card.remove();
     mapPinElement.style.left = pinMainStartLeft;
@@ -187,17 +188,17 @@
   // добавление элемента об успехе
   var successEl = document.querySelector('#success');
   var successHandler = function () {
-    var successElementTempl = successEl.cloneNode(true).content;
+    var successElementTempl = successEl.content.cloneNode(true);
 
     mainElement.appendChild(successElementTempl);
     var successElem = document.querySelector('.success');
     var onEscSuccess = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
         successElem.remove();
+        document.removeEventListener('keydown', onEscSuccess);
       }
     };
     document.addEventListener('keydown', onEscSuccess);
-    document.removeEventListener('keydown', onEscSuccess);
     successElem.addEventListener('click', function () {
       successElem.remove();
     });

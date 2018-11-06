@@ -8,25 +8,33 @@
     bungalo: 'Бунгало'
   };
   var container = document.querySelector('.map__filters-container');
+
+  var card = null;
+
   var remove = function () {
-    var cardElement = document.querySelector('.map__card');
-    if (cardElement) {
-      cardElement.remove();
-      var mapPinElements = document.querySelectorAll(
-          '.map__pin:not(.map__pin--main)'
-      );
-      mapPinElements.forEach(function (element) {
-        element.classList.remove('map__pin--active');
-      });
+    // var cardElement = document.querySelector('.map__card');
+    if (card) {
+      card.remove();
+      card = null;
+      // var mapPinElements = document.querySelectorAll(
+      //     '.map__pin:not(.map__pin--main)'
+      // );
+      // mapPinElements.forEach(function (element) {
+      //   element.classList.remove('map__pin--active');
+      // });
+      var activePin = document.querySelector('.map__pin--active');
+      if (activePin) {
+        activePin.classList.remove('map__pin--active');
+      }
     }
   };
 
   var onPinClick = function (item) {
     return function (evt) {
       evt.preventDefault();
-      var card = window.card.renderAdvert(item);
-      var newElement = document.querySelector('.map');
-      newElement.insertBefore(card, container);
+      card = renderAdvert(item);
+      // var newElement = document.querySelector('.map');
+      window.globals.activeMapElement.insertBefore(card, container);
       evt.currentTarget.classList.add('map__pin--active');
     };
   };
@@ -43,7 +51,7 @@
 
   var renderAdvert = function (advert) {
     // сохранение шаблона всей карточки
-    var adElement = document.querySelector('#card').cloneNode(true).content;
+    var adElement = document.querySelector('#card').content.cloneNode(true);
     // сохранение всех элементов Features
     var popupFeatures = adElement.querySelector('.popup__features');
     var elementFeature = popupFeatures.cloneNode(true);
@@ -69,10 +77,9 @@
     });
     adElement.querySelector('.popup__description').textContent =
       data.description;
+    var photoTemplate = adElement.querySelector('.popup__photos img');
     data.photos.forEach(function (element) {
-      var photoBlockTemplate = adElement
-        .querySelector('.popup__photos img')
-        .cloneNode(true);
+      var photoBlockTemplate = photoTemplate.cloneNode(true);
       photoBlockTemplate.src = element;
       adElement.querySelector('.popup__photos').appendChild(photoBlockTemplate);
     });
