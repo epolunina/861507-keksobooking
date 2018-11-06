@@ -44,9 +44,7 @@
   var buttonReset = document.querySelector('.ad-form__reset');
   var pinMainStartLeft = mapPinElement.style.left;
   var pinMainStartTop = mapPinElement.style.top;
-  // var activeMapElement = document.querySelector('.map');
 
-  // var mapFilter = document.querySelector('.map__filters');
   var startCoords = {
     x: 570,
     y: 375
@@ -168,12 +166,6 @@
   };
   // возвращение в начальный режим
   var setStartMode = function () {
-    // var mapPinsElement = document.querySelectorAll(
-    //     '.map__pin:not(.map__pin--main)'
-    // );
-    // mapPinsElement.forEach(function (element) {
-    //   element.remove();
-    // });
     window.pins.remove();
     adFormElement.reset();
     window.card.remove();

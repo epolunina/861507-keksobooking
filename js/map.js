@@ -1,6 +1,5 @@
 'use strict';
 (function () {
-  // var activeMapElement = document.querySelector('.map');
   var mapPinElement = document.querySelector('.map__pin--main');
 
   var adFormElement = document.querySelector('.ad-form');

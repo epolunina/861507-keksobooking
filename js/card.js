@@ -12,16 +12,10 @@
   var card = null;
 
   var remove = function () {
-    // var cardElement = document.querySelector('.map__card');
     if (card) {
       card.remove();
       card = null;
-      // var mapPinElements = document.querySelectorAll(
-      //     '.map__pin:not(.map__pin--main)'
-      // );
-      // mapPinElements.forEach(function (element) {
-      //   element.classList.remove('map__pin--active');
-      // });
+
       var activePin = document.querySelector('.map__pin--active');
       if (activePin) {
         activePin.classList.remove('map__pin--active');
@@ -33,7 +27,7 @@
     return function (evt) {
       evt.preventDefault();
       card = renderAdvert(item);
-      // var newElement = document.querySelector('.map');
+
       window.globals.activeMapElement.insertBefore(card, container);
       evt.currentTarget.classList.add('map__pin--active');
     };
@@ -51,7 +45,10 @@
 
   var renderAdvert = function (advert) {
     // сохранение шаблона всей карточки
-    var adElement = document.querySelector('#card').content.cloneNode(true);
+    var adElement = document
+      .querySelector('#card')
+      .content.cloneNode(true)
+      .querySelector('.popup');
     // сохранение всех элементов Features
     var popupFeatures = adElement.querySelector('.popup__features');
     var elementFeature = popupFeatures.cloneNode(true);

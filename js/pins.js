@@ -49,7 +49,6 @@
 
     similarListElement.appendChild(fragment);
   };
-  // var mapFilter = document.querySelector('.map__filters');
 
   var updateAdverts = function () {
     var filterType = function (it) {
