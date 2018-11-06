@@ -38,8 +38,6 @@
 
   var maxCoordX = pinsWidth - Value.widthOfPin;
 
-  // var errorEl = document.querySelector('#error');
-
   var mainElement = document.querySelector('main');
   // события  при нажатии мыши
   var mapPinElement = document.querySelector('.map__pin--main');
@@ -47,7 +45,6 @@
   var pinMainStartLeft = mapPinElement.style.left;
   var pinMainStartTop = mapPinElement.style.top;
   var activeMapElement = document.querySelector('.map');
-  var adFormElements = document.querySelectorAll('.ad-form__element');
 
   var mapFilter = document.querySelector('.map__filters');
   var startCoords = {
@@ -161,13 +158,11 @@
   var setUnactiveMode = function () {
     activeMapElement.classList.add('map--faded');
     adFormElement.classList.add('ad-form--disabled');
-    var selectElements = mapFilter.querySelectorAll('select, input');
-    selectElements.forEach(function (element) {
-      element.setAttribute('disabled', 'true');
+
+    window.map.selectElements.forEach(function (element) {
+      element.setAttribute('disabled', true);
     });
-    adFormElements.forEach(function (element) {
-      element.setAttribute('disabled', 'true');
-    });
+
     mapFilter.reset();
     mapPinElement.addEventListener('click', onMouseUp);
   };
@@ -189,35 +184,11 @@
     setUnactiveMode();
   };
 
-  // добавление элемента с ошибкой
-  // var errorHandler = function () {
-  //   var errorElementTempl = errorEl.cloneNode(true).content;
-  //   var erElement = document.createDocumentFragment();
-  //   erElement.appendChild(errorElementTempl);
-  //   mainElement.appendChild(erElement);
-  //   var errorElem = document.querySelector('.error');
-  //   var onEscError = function (evt) {
-  //     if (evt.keyCode === ESC_KEYCODE) {
-  //       errorElem.remove();
-  //       document.removeEventListener('keydown', onEscError);
-  //     }
-  //   };
-  //   document.addEventListener('keydown', onEscError);
-
-  //   errorElem.addEventListener('click', function () {
-  //     errorElem.remove();
-  //   });
-  //   var errorButton = document.querySelector('.error__button');
-  //   errorButton.addEventListener('click', function () {
-  //     errorElem.remove();
-  //   });
-  // };
   // добавление элемента об успехе
   var successEl = document.querySelector('#success');
   var successHandler = function () {
     var successElementTempl = successEl.cloneNode(true).content;
-    // var scElement = document.createDocumentFragment();
-    // scElement.appendChild(successElementTempl);
+
     mainElement.appendChild(successElementTempl);
     var successElem = document.querySelector('.success');
     var onEscSuccess = function (evt) {

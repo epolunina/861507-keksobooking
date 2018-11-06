@@ -2,13 +2,14 @@
 (function () {
   var activeMapElement = document.querySelector('.map');
   var mapPinElement = document.querySelector('.map__pin--main');
-  var adFormElements = document.querySelectorAll('.ad-form__element');
+
   var adFormElement = document.querySelector('.ad-form');
   var pinObject = mapPinElement.getBoundingClientRect();
   var addressElement = document.querySelector('#address');
-  // var errorEl = document.querySelector('.error__message');
-  var mapFilter = document.querySelector('.map__filters');
-  var selectElements = mapFilter.querySelectorAll('select, input');
+
+  var selectElements = document.querySelectorAll(
+      '.map__filters select, .map__filters input, .ad-form__element'
+  );
   var adverts = [];
 
   //  обработка успешной загрузки объявлений
@@ -19,9 +20,6 @@
   var onLoad = function () {
     addressElement.value =
       Math.round(pinObject.left) + ', ' + Math.round(pinObject.top);
-    adFormElements.forEach(function (element) {
-      element.setAttribute('disabled', 'true');
-    });
 
     selectElements.forEach(function (element) {
       element.setAttribute('disabled', 'true');
@@ -35,20 +33,11 @@
     activeMapElement.classList.remove('map--faded');
     adFormElement.classList.remove('ad-form--disabled');
     addressElement.setAttribute('readonly', 'true');
-    adFormElements.forEach(function (element) {
-      element.removeAttribute('disabled');
-    });
+
     selectElements.forEach(function (element) {
       element.removeAttribute('disabled');
     });
   };
-
-  // обработка ошибки при не успешной загрузки объявлений
-  // var errorHandlerLoad = function () {
-  //   var errorElementTempl = errorEl.cloneNode(true).content;
-  //   var erElement = document.createDocumentFragment();
-  //   erElement.appendChild(errorElementTempl);
-  // };
 
   onLoad();
 
@@ -62,6 +51,7 @@
 
   window.map = {
     onStart: onStart,
-    adverts: adverts
+    adverts: adverts,
+    selectElements: selectElements
   };
 })();

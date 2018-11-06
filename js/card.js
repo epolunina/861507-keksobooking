@@ -7,7 +7,7 @@
     house: 'Дом',
     bungalo: 'Бунгало'
   };
-
+  var container = document.querySelector('.map__filters-container');
   var remove = function () {
     var cardElement = document.querySelector('.map__card');
     if (cardElement) {
@@ -21,6 +21,15 @@
     }
   };
 
+  var onPinClick = function (item) {
+    return function (evt) {
+      evt.preventDefault();
+      var card = window.card.renderAdvert(item);
+      var newElement = document.querySelector('.map');
+      newElement.insertBefore(card, container);
+      evt.currentTarget.classList.add('map__pin--active');
+    };
+  };
   var onPopupClose = function () {
     remove();
   };
@@ -75,6 +84,7 @@
 
   window.card = {
     renderAdvert: renderAdvert,
-    remove: remove
+    remove: remove,
+    onPinClick: onPinClick
   };
 })();

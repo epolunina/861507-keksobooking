@@ -10,22 +10,15 @@
   var similarListElement = document.querySelector('.map__pins');
   var filteredAdvert = [];
 
-  var container = document.querySelector('.map__filters-container');
   var render = function (item) {
     var pin = mapPinTemplate.cloneNode(true).content;
     pin.querySelector('.map__pin').style.left = item.location.x + 'px';
     pin.querySelector('.map__pin').style.top = item.location.y + 'px';
     pin.querySelector('img').src = item.author.avatar;
     pin.querySelector('img').alt = item.offer.title;
-    pin.querySelector('.map__pin').addEventListener('click', function (evt) {
-      evt.preventDefault();
-      //  var card = document.createDocumentFragment();
-      // card.appendChild(window.card.renderAdvert(item));
-      var card = window.card.renderAdvert(item);
-      var newElement = document.querySelector('.map');
-      newElement.insertBefore(card, container);
-      evt.currentTarget.classList.add('map__pin--active');
-    });
+    pin
+      .querySelector('.map__pin')
+      .addEventListener('click', window.card.onPinClick(item));
 
     return pin;
   };
@@ -60,11 +53,13 @@
       var data = it.offer;
       if (priceFilter.value === 'low') {
         return data.price < RangeOfPrice.LOW;
-      } else if (priceFilter.value === 'middle') {
+      }
+      if (priceFilter.value === 'middle') {
         return (
           data.price > RangeOfPrice.LOW && data.price <= RangeOfPrice.MIDDLE
         );
-      } else if (priceFilter.value === 'high') {
+      }
+      if (priceFilter.value === 'high') {
         return data.price > RangeOfPrice.MIDDLE;
       }
       return true;
@@ -94,13 +89,9 @@
       );
       var data = it.offer.features;
 
-      for (var i = 0; i < featuresFilter.length; i++) {
-        if (data.indexOf(featuresFilter[i].value) === -1) {
-          return false;
-        }
-      }
-
-      return true;
+      return Array.from(featuresFilter).every(function (item) {
+        return data.indexOf(item.value) !== -1;
+      });
     };
 
     filteredAdvert = window.map.adverts

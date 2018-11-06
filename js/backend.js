@@ -5,17 +5,16 @@
   var ESC_KEYCODE = 27;
   var Address = {
     SEND_FORM: 'https://js.dump.academy/keksobooking',
-    GET_DATA: 'https://js.dump.academy/keksobooking/datavv'
+    GET_DATA: 'https://js.dump.academy/keksobooking/data'
   };
   var errorElement = document.querySelector('.error__message');
   var errorEl = document.querySelector('#error');
   var mainElement = document.querySelector('main');
   var onError = function () {
     var errorElementTempl = errorEl.content.cloneNode(true);
-    // var erElement = document.createDocumentFragment();
-    // erElement.appendChild(errorElementTempl);
+
     mainElement.appendChild(errorElementTempl);
-    console.log(errorElementTempl.innerHTML);
+
     var errorElem = errorElementTempl.querySelector('.error');
     var onEscError = function (evt) {
       if (evt.keyCode === ESC_KEYCODE) {
